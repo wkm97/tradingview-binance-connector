@@ -47,7 +47,12 @@ build:
 build_layer: build 
 	rm -rf "$(ARTIFACTS_DIR)/python" || true
 	mkdir -p "$(ARTIFACTS_DIR)/python"
-	python -m pip install -r requirements.txt -t "$(ARTIFACTS_DIR)/python"
+	python -m pip install \
+		--platform manylinux2014_x86_64 \
+		--implementation cp \
+		--python-version 3.9 \
+		--only-binary=:all: --upgrade \
+		-r requirements.txt -t "$(ARTIFACTS_DIR)/python"
 	python -m pip install dist/*.whl -t "$(ARTIFACTS_DIR)/python"  
 
 .PHONY: package_layer

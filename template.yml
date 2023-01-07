@@ -1,10 +1,25 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+    BinanceApiKey:
+      Description: 'Required. Binance API Key you are deploying'
+      Type: String
+    BinanceApiSecret:
+      Description: 'Required. Binance API Secret you are deploying'
+      Type: String
+      
+
 Globals:
   Function:
     Handler: handler.handler
     Runtime: python3.9
+    Environment:
+      Variables:
+        POWERTOOLS_SERVICE_NAME: midas
+        LOG_LEVEL: INFO
+        BINANCE_API_KEY: !Ref BinanceApiKey
+        BINANCE_API_SECRET: !Ref BinanceApiSecret
 
 Resources:
   ServerlessProjectLayer:
@@ -31,8 +46,22 @@ Resources:
       Handler: multiply.handler
       Layers:
         - !Ref ServerlessProjectLayer
+  
+  SpotAccountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions
+      Handler: spot_account.lambda_handler
+      Layers:
+        - !Ref ServerlessProjectLayer
+      Events:
+        SpotAccount:
+          Type: Api
+          Properties:
+            Path: /account
+            Method: get
 
 Outputs:
   AddApi:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/add/"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
