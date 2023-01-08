@@ -8,6 +8,14 @@ To prepare the project for local development it's necessary to install the share
 make develop
 ```
 
+To sam build on a faster iteration without re-building `ServerlessDependenciesLayer`. Run:
+```bash
+make build-fast
+# next command
+sam local start-api
+sam local invoke ...
+```
+
 ## Running tests
 
 ```

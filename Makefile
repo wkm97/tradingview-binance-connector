@@ -41,11 +41,11 @@ develop:
 	python -m pip install -U -r requirements-dev.txt
 
 # build project
-build_shared:
+build-shared:
 	rm -rf dist || true
 	python -m build -w
 
-build-ServerlessProjectLayer: build_shared
+build-ServerlessProjectLayer: build-shared
 	rm -rf "$(ARTIFACTS_DIR)/python" || true
 	mkdir -p "$(ARTIFACTS_DIR)/python"
 	python -m pip install dist/*.whl -t "$(ARTIFACTS_DIR)/python"  
@@ -60,7 +60,7 @@ build-ServerlessDependenciesLayer:
 		--only-binary=:all: --upgrade \
 		-r requirements.txt -t "$(ARTIFACTS_DIR)/python"
 
-build_fast:
+build-fast:
 	sam build --exclude ServerlessDependenciesLayer
 
-.PHONY: build_shared build-ServerlessProjectLayer build-ServerlessDependenciesLayer build_fast
+.PHONY: build-shared build-ServerlessProjectLayer build-ServerlessDependenciesLayer build-fast
