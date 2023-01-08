@@ -1,20 +1,21 @@
 MYPY_DIRS := $(shell find functions layer ! -path '*.egg-info*' -type d -maxdepth 1 -mindepth 1 | xargs)
 ARTIFACTS_DIR ?= build
 
-.PHONY: test
+# testing
 test:
 	pytest
 
+mypy: $(MYPY_DIRS)
+	$(foreach d, $(MYPY_DIRS), python -m mypy $(d);)
 
-cleanfull: clean clean-python
+.PHONY: test mypy
 
-.PHONY: clean
+# clean project
 clean:
 	rm -rf env
 	rm -rf local
 	rm -rf .aws-sam
 
-.PHONY: clean-python
 clean-python:
 	rm -rf **/.pytest_cache
 	rm -rf .tox
@@ -29,22 +30,27 @@ clean-python:
 	find . -name '*.pyo' -exec rm -f {} +
 	rm -rf .coverage*
 
-.PHONY: mypy
-mypy: $(MYPY_DIRS)
-	$(foreach d, $(MYPY_DIRS), python -m mypy $(d);)
+cleanfull: clean clean-python
 
+.PHONY: clean clean-python cleanfull
+
+# development
 .PHONY: develop
 develop:
 	python -m pip install --editable .
 	python -m pip install -U -r requirements-dev.txt
 
-.PHONY: build
-build:
+# build project
+build_shared:
 	rm -rf dist || true
 	python -m build -w
 
-.PHONY: build_layer
-build_layer: build 
+build-ServerlessProjectLayer: build_shared
+	rm -rf "$(ARTIFACTS_DIR)/python" || true
+	mkdir -p "$(ARTIFACTS_DIR)/python"
+	python -m pip install dist/*.whl -t "$(ARTIFACTS_DIR)/python"  
+
+build-ServerlessDependenciesLayer:
 	rm -rf "$(ARTIFACTS_DIR)/python" || true
 	mkdir -p "$(ARTIFACTS_DIR)/python"
 	python -m pip install \
@@ -53,11 +59,8 @@ build_layer: build
 		--python-version 3.9 \
 		--only-binary=:all: --upgrade \
 		-r requirements.txt -t "$(ARTIFACTS_DIR)/python"
-	python -m pip install dist/*.whl -t "$(ARTIFACTS_DIR)/python"  
 
-.PHONY: package_layer
-package_layer: build_layer
-	cd "$(ARTIFACTS_DIR)"; zip -rq ../layer.zip python
+build_fast:
+	sam build --exclude ServerlessDependenciesLayer
 
-.PHONY: build-ServerlessProjectLayer
-build-ServerlessProjectLayer: build_layer
+.PHONY: build_shared build-ServerlessProjectLayer build-ServerlessDependenciesLayer build_fast

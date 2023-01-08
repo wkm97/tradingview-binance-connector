@@ -24,9 +24,12 @@ Globals:
         BINANCE_API_KEY: !Ref BinanceApiKey
         BINANCE_API_SECRET: !Ref BinanceApiSecret
         DISCORD_WEBHOOK: !Ref DiscordWebhook
+    Layers:
+      - !Ref ServerlessDependenciesLayer
+      - !Ref ServerlessProjectLayer
 
 Resources:
-  ServerlessLibraryLayer:
+  ServerlessDependenciesLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
       ContentUri: .
@@ -34,7 +37,7 @@ Resources:
         - python3.9
     Metadata:
       BuildMethod: makefile
-      
+
   ServerlessProjectLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -53,8 +56,6 @@ Resources:
       CodeUri: functions
       Handler: discord_notification.lambda_handler
       Timeout: 30
-      Layers:
-        - !Ref ServerlessProjectLayer
       Events:
         SNSEvent:
           Type: SNS
@@ -70,13 +71,10 @@ Resources:
       Environment:
         Variables:
           TRADE_SNS_TOPIC: !Ref TradeSnsTopic
-      Layers:
-        - !Ref ServerlessProjectLayer
       Policies:
         - SNSPublishMessagePolicy:
             TopicName:
               !GetAtt TradeSnsTopic.TopicName
-
       Events:
         SpotAccount:
           Type: Api
