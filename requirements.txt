@@ -1,2 +1,4 @@
-aws-lambda-powertools
+aws-lambda-powertools[all]
 python-binance
+boto3
+pydantic

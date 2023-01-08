@@ -156,3 +156,5 @@ build/
 layer.zip
 .aws-sam
 samconfig.toml
+
+logfile.txt

@@ -8,6 +8,9 @@ Parameters:
     BinanceApiSecret:
       Description: 'Required. Binance API Secret you are deploying'
       Type: String
+    DiscordWebhook:
+      Description: 'Required. DiscordWebhook for notification you are deploying'
+      Type: String
       
 
 Globals:
@@ -20,8 +23,18 @@ Globals:
         LOG_LEVEL: INFO
         BINANCE_API_KEY: !Ref BinanceApiKey
         BINANCE_API_SECRET: !Ref BinanceApiSecret
+        DISCORD_WEBHOOK: !Ref DiscordWebhook
 
 Resources:
+  ServerlessLibraryLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: .
+      CompatibleRuntimes:
+        - python3.9
+    Metadata:
+      BuildMethod: makefile
+      
   ServerlessProjectLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -30,36 +43,46 @@ Resources:
         - python3.9
     Metadata:
       BuildMethod: makefile
-
-  AddFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: functions
-      Handler: add.handler
-      Layers:
-        - !Ref ServerlessProjectLayer
-
-  MultiplyFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: functions
-      Handler: multiply.handler
-      Layers:
-        - !Ref ServerlessProjectLayer
   
-  SpotAccountFunction:
+  TradeSnsTopic:
+    Type: AWS::SNS::Topic
+
+  DiscordNotificationFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: functions
-      Handler: spot_account.lambda_handler
+      Handler: discord_notification.lambda_handler
+      Timeout: 30
       Layers:
         - !Ref ServerlessProjectLayer
+      Events:
+        SNSEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref TradeSnsTopic
+  
+  SpotTradeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions
+      Handler: spot_trade.lambda_handler
+      Timeout: 30
+      Environment:
+        Variables:
+          TRADE_SNS_TOPIC: !Ref TradeSnsTopic
+      Layers:
+        - !Ref ServerlessProjectLayer
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName:
+              !GetAtt TradeSnsTopic.TopicName
+
       Events:
         SpotAccount:
           Type: Api
           Properties:
-            Path: /account
-            Method: get
+            Path: /trade
+            Method: post
 
 Outputs:
   AddApi:

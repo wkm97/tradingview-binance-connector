@@ -1,0 +1,18 @@
+{
+    "passphrase": "abcdefgh",
+    "time": "{{timenow}}",
+    "exchange": "{{exchange}}",
+    "ticker": "{{ticker}}",
+    "bar": {
+        "time": "{{time}}",
+        "open": {{open}},
+        "high": {{high}},
+        "low": {{low}},
+        "close": {{close}},
+        "volume": {{volume}}
+    },
+    "strategy": {
+        "order_action": "BUY",
+        "order_contracts": 80,
+    }
+}
