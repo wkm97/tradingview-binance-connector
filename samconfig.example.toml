@@ -1,0 +1,42 @@
+version = 0.1
+[default]
+parameter_overrides=[
+  "BinanceApiKey=HKW4PPRqdM8e%N",
+  "BinanceApiSecret=HKW4PPRqdM8e%N",
+  "DiscordWebhook=https://discord.com/api/webhooks",
+]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "sam-app"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-b7k5hpde05nw"
+s3_prefix = "sam-app"
+region = "ap-southeast-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+parameter_overrides=[
+  "BinanceApiKey=HKW4PPRqdM8e%N",
+  "BinanceApiSecret=HKW4PPRqdM8e%N",
+  "DiscordWebhook=https://discord.com/api/webhooks",
+]
+
+[default.sync]
+[default.sync.parameters]
+parameter_overrides=[
+  "BinanceApiKey=HKW4PPRqdM8e%N",
+  "BinanceApiSecret=HKW4PPRqdM8e%N",
+  "DiscordWebhook=https://discord.com/api/webhooks",
+]
+
+[default.local]
+[default.local_invoke.parameters]
+parameter_overrides=[
+  "BinanceApiKey=HKW4PPRqdM8e%N",
+  "BinanceApiSecret=HKW4PPRqdM8e%N",
+  "DiscordWebhook=https://discord.com/api/webhooks",
+]
+[default.local_start_api.parameters]
+parameter_overrides=[
+  "BinanceApiKey=HKW4PPRqdM8e%N",
+  "BinanceApiSecret=HKW4PPRqdM8e%N",
+  "DiscordWebhook=https://discord.com/api/webhooks",
+]
