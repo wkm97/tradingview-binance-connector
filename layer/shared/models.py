@@ -1,16 +1,18 @@
+import json
 from pydantic import BaseModel, Json
 from aws_lambda_powertools.utilities.parser.models import APIGatewayProxyEventModel
-from typing import List, Optional
 
 class TradeNotification(BaseModel):
-    ticker: str
+    symbol: str
     action: str
     quantity: int
+    price: int
 
-class SpotTrade(BaseModel):
-    ticker: str
+class SpotTradeParams(BaseModel):
+    symbol: str
     action: str
     quantity: int
+    price: int
 
 class SpotTradeAPIEvent(APIGatewayProxyEventModel):
-    body: Json[SpotTrade]
+    body: Json[SpotTradeParams]  # type: ignore[assignment]

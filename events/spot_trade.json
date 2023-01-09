@@ -1,5 +1,5 @@
 {
-  "body": "{\n    \"ticker\": \"ETHUSDT\",\n    \"action\": \"BUY\",\n    \"quantity\": 80\n}",
+  "body": "{\n    \"symbol\": \"SANDUSDT\",\n    \"action\": \"BUY\",\n    \"quantity\": 30,\n    \"price\": 0.5\n}",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
   "httpMethod": "POST",

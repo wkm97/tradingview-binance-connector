@@ -2,16 +2,19 @@ AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 
 Parameters:
-    BinanceApiKey:
-      Description: 'Required. Binance API Key you are deploying'
-      Type: String
-    BinanceApiSecret:
-      Description: 'Required. Binance API Secret you are deploying'
-      Type: String
-    DiscordWebhook:
-      Description: 'Required. DiscordWebhook for notification you are deploying'
-      Type: String
-      
+  StageEnvironment:
+    Description: "Required. Deployment Environment"
+    Type: String
+    Default: dev
+  BinanceApiKey:
+    Description: "Required. Binance API Key you are deploying"
+    Type: String
+  BinanceApiSecret:
+    Description: "Required. Binance API Secret you are deploying"
+    Type: String
+  DiscordWebhook:
+    Description: "Required. DiscordWebhook for notification you are deploying"
+    Type: String
 
 Globals:
   Function:
@@ -24,6 +27,7 @@ Globals:
         BINANCE_API_KEY: !Ref BinanceApiKey
         BINANCE_API_SECRET: !Ref BinanceApiSecret
         DISCORD_WEBHOOK: !Ref DiscordWebhook
+        STAGE_ENVIRONMENT: !Ref StageEnvironment
     Layers:
       - !Ref ServerlessDependenciesLayer
       - !Ref ServerlessProjectLayer
@@ -46,7 +50,7 @@ Resources:
         - python3.9
     Metadata:
       BuildMethod: makefile
-  
+
   TradeSnsTopic:
     Type: AWS::SNS::Topic
 
@@ -61,7 +65,7 @@ Resources:
           Type: SNS
           Properties:
             Topic: !Ref TradeSnsTopic
-  
+
   SpotTradeFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -73,8 +77,7 @@ Resources:
           TRADE_SNS_TOPIC: !Ref TradeSnsTopic
       Policies:
         - SNSPublishMessagePolicy:
-            TopicName:
-              !GetAtt TradeSnsTopic.TopicName
+            TopicName: !GetAtt TradeSnsTopic.TopicName
       Events:
         SpotAccount:
           Type: Api

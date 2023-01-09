@@ -60,7 +60,4 @@ build-ServerlessDependenciesLayer:
 		--only-binary=:all: --upgrade \
 		-r requirements.txt -t "$(ARTIFACTS_DIR)/python"
 
-build-fast:
-	sam build --exclude ServerlessDependenciesLayer
-
 .PHONY: build-shared build-ServerlessProjectLayer build-ServerlessDependenciesLayer build-fast
