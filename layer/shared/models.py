@@ -9,6 +9,7 @@ class TradeNotification(BaseModel):
     price: float
 
 class SpotTradeParams(BaseModel):
+    passphrase: str
     symbol: str
     action: str
     quantity: int

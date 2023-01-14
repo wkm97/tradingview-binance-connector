@@ -17,6 +17,8 @@ BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET")
 TRADE_SNS_TOPIC = os.getenv("TRADE_SNS_TOPIC")
 STAGE_ENVIRONMENT = os.getenv("STAGE_ENVIRONMENT")
 DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
+PASSPHRASE = os.getenv("PASSPHRASE")
+
 
 client = Client(
     BINANCE_API_KEY,
@@ -36,6 +38,9 @@ def lambda_handler(event: SpotTradeAPIEvent, _: LambdaContext) -> dict:
     
     try:
         params = event.body
+        if(params.passphrase != PASSPHRASE):
+            return build_response(HTTPStatus.UNAUTHORIZED , {"message": "wrong credential"})
+
         order = client.order_limit(
             symbol=params.symbol,
             side=params.action,

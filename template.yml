@@ -15,6 +15,10 @@ Parameters:
   DiscordWebhook:
     Description: "Required. DiscordWebhook for notification you are deploying"
     Type: String
+  Passphrase:
+    Description: "Extra security"
+    Type: String
+    Default: hahahaha
 
 Globals:
   Function:
@@ -28,6 +32,7 @@ Globals:
         BINANCE_API_SECRET: !Ref BinanceApiSecret
         DISCORD_WEBHOOK: !Ref DiscordWebhook
         STAGE_ENVIRONMENT: !Ref StageEnvironment
+        PASSPHRASE: !Ref Passphrase
     Layers:
       - !Ref ServerlessDependenciesLayer
       - !Ref ServerlessProjectLayer
