@@ -1,0 +1,7 @@
+{
+    "passphrase": "???",
+    "symbol": "{{ticker}}",
+    "action": "BUY",
+    "quantity": "1",
+    "price": "20.00"
+}

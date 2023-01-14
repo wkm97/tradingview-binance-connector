@@ -6,13 +6,13 @@ class TradeNotification(BaseModel):
     symbol: str
     action: str
     quantity: int
-    price: int
+    price: float
 
 class SpotTradeParams(BaseModel):
     symbol: str
     action: str
     quantity: int
-    price: int
+    price: float
 
 class SpotTradeAPIEvent(APIGatewayProxyEventModel):
     body: Json[SpotTradeParams]  # type: ignore[assignment]
